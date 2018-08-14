@@ -1,0 +1,4 @@
+for i in $(ls |grep "Sample_"); do cd $i ; cat *_R1_*.fastq.gz *_R2_*.fastq.gz > ../$(echo $i | sed "s/Sample_//").PE.fastq.gz ; cd .. ; done
+gunzip *.gz &
+for file in $(ls *.fastq); do qsub -cwd -V -b y -N censor -o censor.out -e censor.err -pe multi-thread 1 -l virtual_free=4G perl censor4EFGHIJ.pl \< $file \> censored$file; done
+for file in $(ls censor*.fastq); do qsub -cwd -V -b y -N count -o countall.out -e count.err -pe multi-thread 1 -l virtual_free=4G perl countscriptInputarray.pl $file; done
